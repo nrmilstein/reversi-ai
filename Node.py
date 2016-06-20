@@ -12,9 +12,9 @@ class Node:
     game_state = self.game_state
     possible_moves = game_state.get_possible_moves()
     if not possible_moves:
-      return ([self.move], None, game_state.color * game_state.get_score())
+      return ([self.move], None, game_state.get_score())
     if depth == 0:
-      return ([self.move], game_state.to_move * game_state.get_value(), None)
+      return ([self.move], game_state.get_value(), None)
 
     best_move = None
     best_value = (-math.inf, None)

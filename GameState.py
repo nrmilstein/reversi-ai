@@ -27,7 +27,9 @@ class GameState:
   def get_value(self):
     possible_moves = self.get_possible_moves()
     if not possible_moves: # game over
-      return GameValue(None, self.get_score())
+      score = self.color * \
+        self.to_move * sum(sum(cell for cell in row) for row in self.board)
+      return GameValue(None, score)
 
     value_sum = 0
     for i, row in enumerate(self.board):
@@ -37,10 +39,7 @@ class GameState:
           cell_value *= 2
         value_sum += cell_value
 
-    return GameValue(value_sum, None)
-
-  def get_score(self):
-    return sum(sum(cell for cell in row) for row in self.board)
+    return GameValue(self.color * value_sum, None)
 
   def get_possible_moves(self):
     if self._possible_moves is None:
