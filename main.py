@@ -63,28 +63,3 @@ while True:
   print("Current score: " + str(game_state.get_score()))
   print()
 
-
-
-    
-
-
-
-
-  
-
-
-#node = Node(game_state)
-#node.evaluate(5)
-#
-#probe_node = node
-#for i in range(5):
-#  probe_node = probe_node.best_child
-#  print(probe_node.prev_move)
-#  print(probe_node.game_state)
-#  print("Game value: " + str(probe_node.game_state.get_value()))
-#  print("Node value: " + str(probe_node.value))
-#  print()
-#
-#
-#
-#
