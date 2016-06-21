@@ -1,5 +1,6 @@
 import copy
 from Move import Move
+from GameValue import GameValue
 
 class GameState:
   # Cell state – Empty: 0. Dark: 1. Light: -1
@@ -23,23 +24,33 @@ class GameState:
     self.prev_pass = prev_pass
 
     self._possible_moves = None
+    self._value = None
+    self._score = None
 
   def get_value(self):
-    possible_moves = self.get_possible_moves()
-    if not possible_moves: # game over
-      score = self.color * \
-        self.to_move * sum(sum(cell for cell in row) for row in self.board)
-      return GameValue(None, score)
+    if self._value is None:
+      possible_moves = self.get_possible_moves()
+      if not possible_moves:
+        # game over
+        score = self.to_move * self.get_score()
+        self._value = GameValue(None, score)
+      else:
+        value_sum = 0
+        for i, row in enumerate(self.board):
+          for j, cell in enumerate(row):
+            cell_value = cell
+            if (i == 0 or i == 7) and (j == 0 or j == 7):
+              cell_value *= 2
+            value_sum += cell_value
 
-    value_sum = 0
-    for i, row in enumerate(self.board):
-      for j, cell in enumerate(row):
-        cell_value = cell
-        if (i == 0 or i == 7) and (j == 0 or j == 7):
-          cell_value *= 2
-        value_sum += cell_value
+        self._value = GameValue(self.to_move * value_sum, None)
+    return self._value
 
-    return GameValue(self.color * value_sum, None)
+  def get_score(self):
+    if self._score is None:
+      self._score = sum(sum(cell for cell in row) for row in self.board)
+    return self._score
+
 
   def get_possible_moves(self):
     if self._possible_moves is None:
@@ -78,7 +89,7 @@ class GameState:
   def move(self, move):
     new_board = copy.deepcopy(self.board)
     if move.location is not None:
-      new_board[move.location[0]][move.location[1]] = move.color
+      new_board[move.row][move.col] = move.color
       dirs = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1),
           (0, -1), (-1, -1)]
       for dir in dirs:
@@ -105,8 +116,9 @@ class GameState:
       return GameState(new_board, -1 * self.to_move, True)
 
   def __str__(self):
-    result = ""
+    result = "  a|b|c|d|e|f|g|h\n"
     for i, row in enumerate(self.board):
+      result += str(i + 1) + "|"
       for j, cell in enumerate(row):
         #result += " "
         if cell == 0:
@@ -115,8 +127,7 @@ class GameState:
           result += "\u25cb"
         elif cell == -1:
           result += "\u25cf"
-        if j != len(row) - 1:
-          result += "|"
+        result += "|"
       if i != len(self.board) - 1:
         result += "\n"
 
@@ -124,5 +135,4 @@ class GameState:
   
   def __repr__(self):
     return self.__str__()
-
 

@@ -1,38 +1,39 @@
-import math
+from GameValue import GameValue
+from GameState import GameState
 
 class Node:
-  def __init__(self, move = None, game_state = None, value = None,
-      children = None):
-    self.move = move
+  def __init__(self, game_state = None, prev_move = None):
+    self.prev_move = prev_move
     self.game_state = game_state
-    self.value = value
-    self.children = set()
 
-  def get_best_move(self, depth):
+    self.children = []
+    self.value = None
+    self.best_child = None
+
+  def evaluate(self, depth):
     game_state = self.game_state
     possible_moves = game_state.get_possible_moves()
-    if not possible_moves:
-      return ([self.move], None, game_state.get_score())
-    if depth == 0:
-      return ([self.move], game_state.get_value(), None)
+    if depth == 0 or not possible_moves:
+      self.value = game_state.get_value()
+      return
 
-    best_move = None
-    best_value = (-math.inf, None)
+    best_child = None
+    best_value = -GameValue.inf
     for move in possible_moves:
-      node = Node(move, game_state.move(move))
-      move_tuple = node.get_best_move(depth - 1)
+      child_node = Node(game_state.move(move), move)
+      self.children.append(child_node)
+      child_node.evaluate(depth - 1)
       
-      
-      
+      child_node_value = -child_node.value
+
+      if child_node_value > best_value:
+        best_value = child_node_value
+        best_child = child_node
+
+    self.value = best_value
+    self.best_child = best_child
 
 
-
-
-    
-
-
-  def is_leaf(self):
-    return not self.children
-
-  
+#  def is_leaf(self):
+#    return not self.children
 
