@@ -5,7 +5,7 @@ from GameState import GameState
 from Node import Node
 from Move import Move
 
-DEPTH = 3
+DEPTH = 5
 
 player_color = None
 while player_color is None:
@@ -38,18 +38,18 @@ while True:
       print("The only possible move is a pass.")
     else:
       while player_move is None:
-        player_move = random.choice(list(possible_moves))
-        print("Randomly selected move: " + player_move.get_algebraic_string())
-        #player_move_str = input("Your move? ").lower()
-        #try:
-        #  potential_move = Move.from_algebraic_string(player_color, player_move_str)
-        #except ValueError:
-        #  print("Invalid move string.")
-        #else:
-        #  if potential_move not in possible_moves:
-        #    print("That move is not possible.")
-        #  else:
-        #    player_move = potential_move
+        #player_move = random.choice(list(possible_moves))
+        #print("Randomly selected move: " + player_move.get_algebraic_string())
+        player_move_str = input("Your move? ").lower()
+        try:
+          potential_move = Move.from_algebraic_string(player_color, player_move_str)
+        except ValueError:
+          print("Invalid move string.")
+        else:
+          if potential_move not in possible_moves:
+            print("That move is not possible.")
+          else:
+            player_move = potential_move
 
     game_state = game_state.move(player_move)
   else:
